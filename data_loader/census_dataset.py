@@ -108,6 +108,22 @@ def build_model_columns():
     return wide_columns, deep_columns
 
 
+def build_id_mapping(train_file_path, test_file_path, mapping_path):
+    id_mapping = {}
+    id_idx = 1
+    id_mapping["?"] = 0
+    with open(train_file_path, "r") as f:
+        for line in f:
+            word_list = map(lambda x: x.replace(" ", ""), line.strip().split(","))
+            for word in word_list:
+                if word not in id_mapping:
+                    id_mapping[word] = id_idx
+                    id_idx += 1
+
+            break
+    for key in id_mapping:
+        print("key=%s, val=%s" % (key, id_mapping[key]))
+
 def input_fn(data_file, num_epochs, shuffle, batch_size):
     """Generate an input function for the Estimator."""
     assert tf.gfile.Exists(data_file), (
@@ -146,4 +162,17 @@ def define_data_download_flags():
 
 if __name__ == '__main__':
     tf.logging.set_verbosity(tf.logging.INFO)
-    dataset = input_fn("../data/census_data/adult.data", 10, True, 100)
+    build_id_mapping("../data/census_data/adult.data", "../data/census_data/adult.test", "../data/census_data/id_mapping")
+    # dataset = input_fn("../data/census_data/adult.data", 10, False, 10)
+    # print(dataset)
+    # dataset_iter = dataset.make_one_shot_iterator()
+    # with tf.Session() as sess:
+    #     while True:
+    #         try:
+    #             feat, label = sess.run(dataset_iter.get_next())
+    #             print(feat)
+    #             break
+    #         except Exception as e:
+    #             tf.logging.error(e)
+    #             break
+
