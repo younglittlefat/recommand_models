@@ -241,11 +241,11 @@ class FM(BaseEstimator, TransformerMixin):
             init_valid = self.evaluate(Validation_data)
             tf.logging.info("Init: \t train=%.4f, validation=%.4f [%.1f s]" %(init_train, init_valid, time()-t2))
 
-        for epoch in xrange(self.epoch):
+        for epoch in range(self.epoch):
             t1 = time()
             self.shuffle_in_unison_scary(Train_data['X'], Train_data['Y'])
             total_batch = int(len(Train_data['Y']) / self.batch_size)
-            for i in xrange(total_batch):
+            for i in range(total_batch):
                 # generate a batch
                 batch_xs = self.get_random_block_from_data(Train_data, self.batch_size)
                 # Fit training
@@ -306,7 +306,8 @@ def train(args):
 
     # Training
     t1 = time()
-    model = FM(data.features_M, args.pretrain, make_save_file(args), args.hidden_factor, args.epoch, args.batch_size, args.lr, args.lamda, args.keep, args.optimizer, args.batch_norm, args.verbose, args.mla)
+    model = FM(data.features_M, args.pretrain, make_save_file(args), args.hidden_factor, args.epoch, args.batch_size,
+               args.lr, args.lamda, args.keep, args.optimizer, args.batch_norm, args.verbose, args.mla)
     model.train(data.Train_data, data.Validation_data, data.Test_data)
     
     # Find the best validation result across iterations
